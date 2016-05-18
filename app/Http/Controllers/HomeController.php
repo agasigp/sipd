@@ -24,6 +24,13 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $user = auth()->user();
+        if ($user->hasRole('mahasiswa')) {
+            return redirect()->route('mahasiswa.index');
+        } elseif ($user->hasRole('dosen')) {
+            return redirect()->route('dosen.index');
+        } elseif ($user->hasRole('kaprodi')) {
+            return redirect()->route('kaprodi.index');
+        }
     }
 }
