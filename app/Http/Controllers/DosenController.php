@@ -23,28 +23,91 @@ class DosenController extends Controller
     public function index()
     {
         $dosen = DB::select("
-            SELECT
-                @id:=users.id,
-                (select sum(nilai)
-                    FROM penilaian WHERE user2_id = @id AND semester = ? AND tahun = ? AND user_id = ?)
-                AS skor,
-                users.id,
-                users.program_studi_id,
-                users.name,
-                users.status
-            FROM users
-            WHERE users.status = 'dosen' AND
-            users.program_studi_id = ? AND
+        SELECT
+            @id:=users.id,
+            (SELECT COUNT(id) FROM penilaian
+            WHERE user_id IN
+                (SELECT id FROM users WHERE status = 'dosen' AND program_studi_id = ?)
+            AND user2_id = @id AND semester = ? AND tahun = ?)
+            AS count_mhs,
+            users.id,
+            users.program_studi_id,
+            users.name,
+            users.status
+        FROM users
+        WHERE users.program_studi_id = ? AND
+            users.status = 'dosen' AND
             users.id <> ?
-            ORDER BY name ASC
+        ORDER BY name ASC
         ", [
-            $this->getSemester(), date('Y'),
-            auth()->user()->id,
+            auth()->user()->program_studi_id,
+            $this->getSemester(),
+            date('Y'),
             auth()->user()->program_studi_id,
             auth()->user()->id
         ]);
 
-        return view('dosen.index', compact('dosen'));
+        $count_mahasiswa = DB::select("
+            SELECT COUNT(id) AS count FROM penilaian
+            WHERE user_id IN
+                (SELECT id FROM users WHERE status = 'mahasiswa' AND program_studi_id = ?)
+            AND user2_id = ? AND semester = ? AND tahun = ?", [
+                auth()->user()->program_studi_id,
+                auth()->user()->id,
+                $this->getSemester(),
+                date('Y')
+            ])[0];
+
+        $sum_skor_mahasiswa = DB::select("
+            SELECT SUM(skor) AS skor FROM penilaian
+            WHERE user_id IN
+                (SELECT id FROM users WHERE status = 'mahasiswa' AND program_studi_id = ?)
+            AND user2_id = ?
+            AND semester = ?
+            AND tahun =  ?
+        ", [
+            auth()->user()->program_studi_id,
+            auth()->user()->id,
+            $this->getSemester(),
+            date('Y')
+        ])[0];
+
+        $count_dosen = DB::select("
+            SELECT COUNT(id) AS count FROM penilaian
+            WHERE user_id IN
+                (SELECT id FROM users WHERE status = 'dosen' AND program_studi_id = ? AND id <> ?)
+            AND user2_id = ? AND semester = ? AND tahun = ?", [
+                auth()->user()->program_studi_id,
+                auth()->user()->id,
+                auth()->user()->id,
+                $this->getSemester(),
+                date('Y')
+            ])[0];
+
+        $sum_skor_dosen = DB::select("
+            SELECT SUM(skor) AS skor FROM penilaian
+            WHERE user_id IN
+                (SELECT id FROM users WHERE status = 'dosen' AND program_studi_id = ? AND id <> ?)
+            AND user2_id = ?
+            AND semester = ?
+            AND tahun =  ?
+        ", [
+            auth()->user()->program_studi_id,
+            auth()->user()->id,
+            auth()->user()->id,
+            $this->getSemester(),
+            date('Y')
+        ])[0];
+
+        $count_aspek = Aspek::where('roles_id', auth()->user()->roles_id)->count();
+
+        return view('dosen.index', [
+            'dosen' => $dosen,
+            'count_mahasiswa' => $count_mahasiswa->count,
+            'skor_mahasiswa' => $sum_skor_mahasiswa->skor / ($count_aspek * $count_mahasiswa->count),
+            'count_dosen' => $count_dosen->count,
+            'skor_dosen' => $sum_skor_dosen->skor / ($count_aspek * $count_dosen->count),
+        ]);
     }
 
     /**
@@ -59,9 +122,10 @@ class DosenController extends Controller
             ->where('user_id', auth()->user()->id)
             ->where('semester', $this->getSemester())
             ->where('tahun', date('Y'))
-            ->sum('nilai');
+            ->count();
 
         $dosen = User::findOrFail($request->input('dosen'));
+
         if ($skor > 0) {
             Session::flash(
                 'info_message',
@@ -92,19 +156,16 @@ class DosenController extends Controller
      */
     public function store(Request $request)
     {
-        $data = [];
-        foreach ($request->input('skor') as $key => $val) {
-            array_push($data, [
-                'aspek_id' => $request->input('aspek_id')[$key],
-                'user_id' => auth()->user()->id,
-                'user2_id' => $request->input('dosen_id'),
-                'nilai' => $val,
-                'semester' => $this->getSemester(),
-                'tahun' => date('Y')
-            ]);
-        }
+        $sum_skor = array_sum($request->input('skor'));
 
-        DB::table('penilaian')->insert($data);
+        $penilaian = DB::table('penilaian')->insert([
+            'user_id' => auth()->user()->id,
+            'user2_id' => $request->input('dosen_id'),
+            'semester' => $this->getSemester(),
+            'tahun' => date('Y'),
+            'skor' => $sum_skor
+        ]);
+
         Session::flash('success_message', 'Terima kasih telah memberikan penilaian');
         return redirect()->route('dosen.index');
     }
