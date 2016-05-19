@@ -14,7 +14,7 @@
 Route::get('/', 'HomeController@index');
 Route::resource('mahasiswa', 'MahasiswaController');
 Route::resource('dosen', 'DosenController');
-Route::resource('dosen', 'KaprodiController');
+Route::resource('kaprodi', 'KaprodiController');
 
 Route::auth();
 

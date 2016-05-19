@@ -33,7 +33,7 @@ class MahasiswaController extends Controller
                 users.name,
                 users.status
             FROM users
-            WHERE users.status IN('dosen','kaprodi') AND
+            WHERE users.status = 'dosen' AND
             users.program_studi_id = ?
             ORDER BY name ASC
         ", [$this->getSemester(), date('Y'), auth()->user()->id, auth()->user()->program_studi_id]);
@@ -99,7 +99,7 @@ class MahasiswaController extends Controller
         }
 
         DB::table('penilaian')->insert($data);
-        Session::flash('success_message', 'Terimas kasih telah memberikan penilaian');
+        Session::flash('success_message', 'Terima kasih telah memberikan penilaian');
         return redirect()->route('mahasiswa.index');
     }
 
