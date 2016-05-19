@@ -21,7 +21,7 @@
                                         <label for="exampleInputEmail1">Pilih Dosen</label>
                                         <select class="form-control" name="dosen">
                                             @foreach($dosen as $lecturer)
-                                                <?php $nilai = ($lecturer->count_mhs) ? 'sudah' : 'belum' ?>
+                                                <?php $nilai = (is_null($lecturer->skor)) ? 'belum' : 'sudah' ?>
                                                 <option value="{{ $lecturer->id }}">{{ $lecturer->name }} ({{ $nilai.' dinilai' }})</option>
                                             @endforeach
                                         </select>
