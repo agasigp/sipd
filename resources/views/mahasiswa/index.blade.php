@@ -10,6 +10,10 @@
             @if (Session::has('success_message'))
             <div class="alert alert-success"><p>{{ Session::get('success_message') }}</p></div>
             @endif
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
             <div class="panel panel-default">
                 <div class="panel-heading">Penilaian Dosen</div>
                 <div class="panel-body">

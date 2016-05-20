@@ -17,7 +17,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Penilaian Dosen</div>
                 <div class="panel-body">
-                    <form action="{{ route('dosen.create') }}" method="get">
+                    <form action="{{ route('kaprodi.create') }}" method="get">
                         <div class="row">
                             <div class="col-md-12">
                                 @if (! empty($dosen))
@@ -25,7 +25,7 @@
                                         <label for="exampleInputEmail1">Pilih Dosen</label>
                                         <select class="form-control" name="dosen">
                                             @foreach($dosen as $lecturer)
-                                                <?php $nilai = ($lecturer->count_mhs > 0) ? 'sudah' : 'belum' ?>
+                                                <?php $nilai = ($lecturer->count_kaprodi > 0) ? 'sudah' : 'belum' ?>
                                                 <option value="{{ $lecturer->id }}">{{ $lecturer->name }} ({{ $nilai.' dinilai' }})</option>
                                             @endforeach
                                         </select>
@@ -44,11 +44,34 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Info Nilai</div>
                 <div class="panel-body">
-                    <ul>
-                        <li>Nila rata-rata dari mahasiswa : <b>{{ number_format($skor_mahasiswa, 2, ',', '.') }}</b> dari <b>{{ $count_mahasiswa }}</b> mahasiswa</li>
-                        <li>Nila rata-rata dari dosen : <b>{{ number_format($skor_dosen, 2, ',', '.') }}</b> dari <b>{{ $count_dosen }}</b> dosen</li>
-                        <li>Nila rata-rata dari kaprodi : <b>{{ number_format($skor_kaprodi, 2, ',', '.') }}</b></li>
-                    </ul>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nama</th>
+                                <th>Skor Mahasiswa</th>
+                                <th>Skor Teman Sejawat</th>
+                                <th>Skor Atasan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $no = 1; ?>
+                            @foreach($dosen as $lecturer)
+                                <?php
+                                $skor_mahasiswa = $lecturer->count_mhs === 0 ? 0 : $lecturer->sum_skor_mhs / ($count_aspek * $lecturer->count_mhs);
+                                $skor_dosen = $lecturer->count_dosen === 0 ? 0 : $lecturer->sum_skor_dosen / ($count_aspek * $lecturer->count_dosen);
+                                $skor_kaprodi = (is_null($lecturer->sum_skor_kaprodi) ? 0 : $lecturer->sum_skor_kaprodi / $count_aspek);
+                                ?>
+                                <tr>
+                                    <td>{{ $no++ }}</td>
+                                    <td>{{ $lecturer->name }}</td>
+                                    <td>{{ number_format($skor_mahasiswa, 2, ',', '.') }}</td>
+                                    <td>{{ number_format($skor_dosen, 2, ',', '.') }}</td>
+                                    <td>{{ number_format($skor_kaprodi, 2, ',', '.') }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
