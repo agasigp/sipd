@@ -14,6 +14,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    @stack('css')
     {{-- <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" media="screen" title="no title" charset="utf-8"> --}}
     {{-- <link href="{{ elixir('css/app.css') }}" rel="stylesheet"> --}}
 
@@ -50,6 +51,19 @@
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url('/home') }}">Home</a></li>
+                    @if (Auth::check())
+                        @role('administrator')
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                    Manajemen Data <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="{{ route('program-studi.index') }}"><i class="fa fa-btn"></i>Program Studi</a></li>
+                                    <li><a href="{{ route('user.index') }}"><i class="fa fa-btn"></i>User</a></li>
+                                </ul>
+                            </li>
+                        @endrole()
+                    @endif
                 </ul>
 
                 <!-- Right Side Of Navbar -->
@@ -77,6 +91,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js" integrity="sha384-I6F5OKECLVtK/BL+8iSLDEHowSAfUo76ZL9+kGAgTRdiByINKJaqTPH/QVNS1VDb" crossorigin="anonymous"></script>
     {{-- <script src="{{ asset('js/jquery-1.11.3.min.js') }}"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    @stack('scripts')
     {{-- <script src="{{ asset('js/bootstrap.min.js') }}" charset="utf-8"></script> --}}
     {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
 </body>
