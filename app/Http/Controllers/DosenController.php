@@ -26,8 +26,7 @@ class DosenController extends Controller
         SELECT
             @id:=users.id,
             (SELECT COUNT(id) FROM penilaian
-            WHERE user_id IN
-                (SELECT id FROM users WHERE status = 'dosen' AND program_studi_id = ?)
+            WHERE user_id = ?
             AND user2_id = @id AND semester = ? AND tahun = ?)
             AS count_mhs,
             users.id,
@@ -40,7 +39,7 @@ class DosenController extends Controller
             users.id <> ?
         ORDER BY name ASC
         ", [
-            auth()->user()->program_studi_id,
+            auth()->user()->id,
             $this->getSemester(),
             date('Y'),
             auth()->user()->program_studi_id,
@@ -88,9 +87,7 @@ class DosenController extends Controller
             SELECT SUM(skor) AS skor FROM penilaian
             WHERE user_id IN
                 (SELECT id FROM users WHERE status = 'dosen' AND program_studi_id = ? AND id <> ?)
-            AND user2_id = ?
-            AND semester = ?
-            AND tahun =  ?
+            AND user2_id = ? AND semester = ? AND tahun =  ?
         ", [
             auth()->user()->program_studi_id,
             auth()->user()->id,
@@ -99,14 +96,30 @@ class DosenController extends Controller
             date('Y')
         ])[0];
 
+        $sum_skor_kaprodi = DB::select("
+            SELECT SUM(skor) AS skor FROM penilaian
+            WHERE user_id IN
+                (SELECT id FROM users WHERE status = 'kaprodi' AND program_studi_id = ?)
+            AND user2_id = ? AND semester = ? AND tahun =  ?
+        ", [
+            auth()->user()->program_studi_id,
+            auth()->user()->id,
+            $this->getSemester(),
+            date('Y')
+        ])[0];
+
         $count_aspek = Aspek::where('roles_id', auth()->user()->roles_id)->count();
+        $skor_mahasiswa = $count_mahasiswa->count === 0 ? 0 : $sum_skor_mahasiswa->skor / ($count_aspek * $count_mahasiswa->count);
+        $skor_dosen = $count_dosen->count === 0 ? 0 : $sum_skor_dosen->skor / ($count_aspek * $count_dosen->count);
+        $skor_kaprodi = (is_null($sum_skor_kaprodi->skor) ? 0 : $sum_skor_kaprodi->skor / $count_aspek);
 
         return view('dosen.index', [
             'dosen' => $dosen,
             'count_mahasiswa' => $count_mahasiswa->count,
-            'skor_mahasiswa' => $sum_skor_mahasiswa->skor / ($count_aspek * $count_mahasiswa->count),
+            'skor_mahasiswa' => $skor_mahasiswa,
             'count_dosen' => $count_dosen->count,
-            'skor_dosen' => $sum_skor_dosen->skor / ($count_aspek * $count_dosen->count),
+            'skor_dosen' => $skor_dosen,
+            'skor_kaprodi' => $skor_kaprodi
         ]);
     }
 
