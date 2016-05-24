@@ -14,6 +14,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}" media="screen" title="no title" charset="utf-8">
     @stack('css')
     {{-- <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" media="screen" title="no title" charset="utf-8"> --}}
     {{-- <link href="{{ elixir('css/app.css') }}" rel="stylesheet"> --}}
@@ -21,6 +22,11 @@
     <style>
         body {
             font-family: 'Lato';
+            background: url({{ asset('img/background.jpg') }}) no-repeat center center fixed;
+            -webkit-background-size: cover; /* For WebKit*/
+            -moz-background-size: cover;    /* Mozilla*/
+            -o-background-size: cover;      /* Opera*/
+            background-size: cover;         /* Generic*/
         }
 
         .fa-btn {
@@ -42,6 +48,9 @@
                 </button>
 
                 <!-- Branding Image -->
+                <a class="navbar-brand" href="{{ url('/') }}">
+                    <img alt="Brand" src="{{ asset('img/logo.png') }}" style="max-height:40px; margin-top: -10px;">
+                </a>
                 <a class="navbar-brand" href="{{ url('/') }}">
                     Sistem Informasi Penilaian Dosen
                 </a>
@@ -87,6 +96,11 @@
 
     @yield('content')
 
+    <footer class="footer">
+        <div class="container">
+            <p class="text-muted">Copyright © {{ date('Y') }} <a href="http://poltekkes-kemenkes-bengkulu.ac.id/">Politeknik Kesehatan Bengkulu</a></p>
+        </div>
+    </footer>
     <!-- JavaScripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js" integrity="sha384-I6F5OKECLVtK/BL+8iSLDEHowSAfUo76ZL9+kGAgTRdiByINKJaqTPH/QVNS1VDb" crossorigin="anonymous"></script>
     {{-- <script src="{{ asset('js/jquery-1.11.3.min.js') }}"></script> --}}

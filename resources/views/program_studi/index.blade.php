@@ -38,7 +38,7 @@
                                     <td>{{ $ps->nama }}</td>
                                     <td>{{ $ps->deskripsi }}</td>
                                     <td>
-                                        <form method="POST" action="{{ route('program-studi.destroy', $ps->id)}}" accept-charset="UTF-8" class="ng-pristine ng-valid" id="form{{ $no }}">
+                                        <form method="POST" action="{{ route('program-studi.destroy', $ps->id)}}" accept-charset="UTF-8"  id="form{{ $ps->id }}">
                                             {!! csrf_field() !!}
                                             <input name="_method" type="hidden" value="DELETE">
                                             <div class="btn-group btn-group-xs">

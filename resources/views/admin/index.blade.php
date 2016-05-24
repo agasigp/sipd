@@ -14,7 +14,7 @@
     </div>
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
                 <div class="panel-heading">Administrator</div>
                 <div class="panel-body">
                     <p>Halaman Administrator</p>
