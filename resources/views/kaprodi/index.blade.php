@@ -52,6 +52,7 @@
                                 <th>Skor Mahasiswa</th>
                                 <th>Skor Teman Sejawat</th>
                                 <th>Skor Atasan</th>
+                                <th>Skor Rata-rata</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -68,6 +69,7 @@
                                     <td>{{ number_format($skor_mahasiswa, 2, ',', '.') }}</td>
                                     <td>{{ number_format($skor_dosen, 2, ',', '.') }}</td>
                                     <td>{{ number_format($skor_kaprodi, 2, ',', '.') }}</td>
+                                    <td>{{ number_format(($skor_kaprodi + $skor_dosen + $skor_mahasiswa)/3, 2, ',', '.') }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

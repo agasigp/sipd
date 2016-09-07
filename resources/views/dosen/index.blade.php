@@ -48,6 +48,7 @@
                         <li>Nila rata-rata dari mahasiswa : <b>{{ number_format($skor_mahasiswa, 2, ',', '.') }}</b> dari <b>{{ $count_mahasiswa }}</b> mahasiswa</li>
                         <li>Nila rata-rata dari dosen : <b>{{ number_format($skor_dosen, 2, ',', '.') }}</b> dari <b>{{ $count_dosen }}</b> dosen</li>
                         <li>Nila rata-rata dari kaprodi : <b>{{ number_format($skor_kaprodi, 2, ',', '.') }}</b></li>
+                        <li>Nila rata-rata keseluruhan : <b>{{ number_format(($skor_kaprodi + $skor_dosen + $skor_mahasiswa)/3, 2, ',', '.') }}</b></li>
                     </ul>
                 </div>
             </div>

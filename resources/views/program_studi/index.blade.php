@@ -30,7 +30,7 @@
                                 <th>Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="app">
                             <?php $no = 1; ?>
                             @foreach($program_studi as $ps)
                                 <tr>
@@ -43,7 +43,7 @@
                                             <input name="_method" type="hidden" value="DELETE">
                                             <div class="btn-group btn-group-xs">
                                                 <a class="btn btn-default" href="{{ route('program-studi.edit', $ps->id)}}"><i class="fa fa-pencil fa-fw"></i></a>
-                                                <button type="button" class="btn btn-default" onclick="deleteProgramStudi({{ $ps->id }})"><i class="fa fa-trash fa-fw"></i></button>
+                                                <confirm id="{{ $ps->id }}"></confirm>
                                             </div>
                                         </form>
                                     </td>
@@ -61,22 +61,5 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('js/sweetalert.min.js') }}"></script>
-    <script>
-        function deleteProgramStudi(id)
-        {
-            var id = id;
-            swal({
-                title: "Anda Yakin Ingin Menghapus?",
-                text: "Anda yakin ingin menghapus data ini?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Ya!",
-                closeOnConfirm: true
-            }, function() {
-                $("#form" + id).submit();
-            });
-        }
-    </script>
+    <script src="{{ asset('js/main.js') }}"></script>
 @endpush
