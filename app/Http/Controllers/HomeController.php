@@ -31,6 +31,8 @@ class HomeController extends Controller
             return redirect()->route('dosen.index');
         } elseif ($user->hasRole('kaprodi')) {
             return redirect()->route('kaprodi.index');
+        } elseif ($user->hasRole('administrator')) {
+            return redirect()->route('admin.index');
         }
     }
 }

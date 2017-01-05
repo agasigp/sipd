@@ -15,7 +15,9 @@ Route::get('/', 'HomeController@index');
 Route::resource('mahasiswa', 'MahasiswaController');
 Route::resource('dosen', 'DosenController');
 Route::resource('kaprodi', 'KaprodiController');
-
+Route::resource('admin', 'AdminController');
+Route::resource('user', 'UserController');
+Route::resource('program-studi', 'ProgramStudiController');
 Route::auth();
 
 Route::get('/home', 'HomeController@index');

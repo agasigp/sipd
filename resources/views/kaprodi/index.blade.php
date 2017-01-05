@@ -52,6 +52,7 @@
                                 <th>Skor Mahasiswa</th>
                                 <th>Skor Teman Sejawat</th>
                                 <th>Skor Atasan</th>
+                                <th>Skor Rata-rata</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -61,6 +62,18 @@
                                 $skor_mahasiswa = $lecturer->count_mhs === 0 ? 0 : $lecturer->sum_skor_mhs / ($count_aspek * $lecturer->count_mhs);
                                 $skor_dosen = $lecturer->count_dosen === 0 ? 0 : $lecturer->sum_skor_dosen / ($count_aspek * $lecturer->count_dosen);
                                 $skor_kaprodi = (is_null($lecturer->sum_skor_kaprodi) ? 0 : $lecturer->sum_skor_kaprodi / $count_aspek);
+                                $rata2 = ($skor_kaprodi + $skor_dosen + $skor_mahasiswa)/3;
+                                if ($rata2 <= 2) {
+                                    $predikat = 'sangat buruk';
+                                } elseif ($rata2 <= 3) {
+                                    $predikat = 'buruk';
+                                } elseif ($rata2 <= 4) {
+                                    $predikat = 'cukup';
+                                } elseif ($rata2 <= 5) {
+                                    $predikat = 'baik';
+                                } else {
+                                    $predikat = 'sangat baik';
+                                }
                                 ?>
                                 <tr>
                                     <td>{{ $no++ }}</td>
@@ -68,6 +81,7 @@
                                     <td>{{ number_format($skor_mahasiswa, 2, ',', '.') }}</td>
                                     <td>{{ number_format($skor_dosen, 2, ',', '.') }}</td>
                                     <td>{{ number_format($skor_kaprodi, 2, ',', '.') }}</td>
+                                    <td>{{ number_format($rata2, 2, ',', '.') }} ({{ $predikat }})</td>
                                 </tr>
                             @endforeach
                         </tbody>
