@@ -13,7 +13,7 @@ class MahasiswaController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'role:mahasiswa']);
     }
     /**
      * Display a listing of the resource.

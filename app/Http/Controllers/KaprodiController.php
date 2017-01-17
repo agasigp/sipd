@@ -13,7 +13,7 @@ class KaprodiController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'role:kaprodi']);
     }
     /**
      * Display a listing of the resource.

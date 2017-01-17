@@ -15,7 +15,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'role:admin']);
     }
     /**
      * Display a listing of the resource.
@@ -54,7 +54,7 @@ class UserController extends Controller
         $role = null;
         switch ($request->input('roles')) {
             case '1':
-                $status = 'administrator';
+                $status = 'admin';
                 $role = Role::where('name', 'administrator')->first();
                 break;
             case '2':
